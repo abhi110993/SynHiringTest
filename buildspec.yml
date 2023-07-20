@@ -2,8 +2,12 @@ version: 0.2
 
 
 phases:
+  install:
+    runtime-versions:
+      java: corretto11
   pre_build:
     commands:
+      - mvn clean install
       - echo Logging in to Amazon ECR...
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
@@ -26,4 +30,6 @@ phases:
       - printf '[{"name":"nodeapp","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
-    files: imagedefinitions.json
+    files: 
+      - imagedefinitions.json
+      - target/evaluateApi-0.0.1-SNAPSHOT.jar
